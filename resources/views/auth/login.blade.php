@@ -10,7 +10,7 @@
             </div>
 
             <div class="surface-note">
-                Use the owner account for internal management only. The customer-facing order page is a separate public link.
+                Use the owner account for internal management only.
             </div>
 
             <form action="{{ route('login.store') }}" method="POST" class="stack">

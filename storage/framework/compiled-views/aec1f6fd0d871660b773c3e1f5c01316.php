@@ -1,5 +1,6 @@
 <?php $__env->startSection('content'); ?>
     <section class="hero">
+        <span class="eyebrow">Stock Control</span>
         <h1>Inventory</h1>
         <p class="muted">This page manages stock quantities and reorder levels for each product.</p>
     </section>
@@ -8,26 +9,26 @@
         <?php if($inventories->isEmpty()): ?>
             <p class="muted">Inventory will appear after you create products.</p>
         <?php else: ?>
-            <table>
-                <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Current Stock</th>
-                    <th>Reorder Level</th>
-                    <th>Update</th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="inventory-list">
                 <?php $__currentLoopData = $inventories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $inventory): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <tr>
-                        <td>
-                            <strong><?php echo e($inventory->product?->name); ?></strong><br>
-                            <span class="muted"><?php echo e($inventory->product?->category); ?></span>
-                        </td>
-                        <td><?php echo e($inventory->quantity_on_hand); ?></td>
-                        <td><?php echo e($inventory->reorder_level); ?></td>
-                        <td>
-                            <form action="<?php echo e(route('inventories.update', $inventory)); ?>" method="POST" class="form-grid">
+                    <article class="inventory-row">
+                        <div class="product-main">
+                            <strong><?php echo e($inventory->product?->name); ?></strong>
+                            <p class="product-copy"><?php echo e($inventory->product?->category); ?></p>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Current Stock</span>
+                            <span class="product-value"><?php echo e($inventory->quantity_on_hand); ?></span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Reorder Level</span>
+                            <span class="product-value"><?php echo e($inventory->reorder_level); ?></span>
+                        </div>
+
+                        <div>
+                            <form action="<?php echo e(route('inventories.update', $inventory)); ?>" method="POST" class="inventory-form">
                                 <?php echo csrf_field(); ?>
                                 <?php echo method_field('PATCH'); ?>
                                 <div>
@@ -38,15 +39,14 @@
                                     <label for="reorder_level_<?php echo e($inventory->id); ?>">Reorder</label>
                                     <input id="reorder_level_<?php echo e($inventory->id); ?>" name="reorder_level" type="number" min="0" value="<?php echo e($inventory->reorder_level); ?>" required>
                                 </div>
-                                <div style="align-self: end;">
+                                <div class="inventory-button">
                                     <button class="button-inline" type="submit">Save</button>
                                 </div>
                             </form>
-                        </td>
-                    </tr>
+                        </div>
+                    </article>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </tbody>
-            </table>
+            </div>
         <?php endif; ?>
     </section>
 <?php $__env->stopSection(); ?>

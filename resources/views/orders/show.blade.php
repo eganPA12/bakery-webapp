@@ -2,35 +2,83 @@
 
 @section('content')
     <section class="hero">
-        <h1>{{ $order->order_number }}</h1>
-        <p class="muted">
-            {{ strtoupper($order->order_type) }} order for {{ $order->customer?->name ?? 'Walk-in customer' }}
-        </p>
-        <div class="actions">
-            <span class="badge">{{ strtoupper($order->order_status) }}</span>
-            <span class="badge">Rp {{ number_format((float) $order->total_amount, 0, ',', '.') }}</span>
+        <div class="hero-grid">
+            <div>
+                <span class="eyebrow">Order Detail</span>
+                <h1>{{ $order->order_number }}</h1>
+                <p class="muted">
+                    {{ strtoupper($order->order_type) }} order for {{ $order->customer?->name ?? 'Walk-in customer' }}
+                </p>
+                <div class="actions">
+                    <span class="badge badge-hero">{{ strtoupper($order->order_status) }}</span>
+                    <span class="badge badge-hero">Rp {{ number_format((float) $order->total_amount, 0, ',', '.') }}</span>
+                </div>
+            </div>
+
+            <div class="hero-aside">
+                <span class="eyebrow">Quick Snapshot</span>
+                <p><strong>Items:</strong> {{ $order->items->sum('quantity') }}</p>
+                <p><strong>Platform Fee:</strong> Rp {{ number_format((float) $order->platform_fee, 0, ',', '.') }}</p>
+                <p><strong>Pickup:</strong> {{ $order->pickup_time?->format('d M Y H:i') ?? 'Not scheduled' }}</p>
+            </div>
         </div>
     </section>
 
-    <section class="grid grid-2">
+    <section class="detail-grid">
         <div class="card stack">
             <h2>Order Summary</h2>
-            <p><strong>Type:</strong> {{ strtoupper($order->order_type) }}</p>
-            <p><strong>Status:</strong> {{ strtoupper($order->order_status) }}</p>
-            <p><strong>Customer:</strong> {{ $order->customer?->name ?? 'Walk-in customer' }}</p>
-            <p><strong>Ordered At:</strong> {{ $order->ordered_at?->format('d M Y H:i') }}</p>
-            <p><strong>Pickup Time:</strong> {{ $order->pickup_time?->format('d M Y H:i') ?? '-' }}</p>
-            <p><strong>Expires At:</strong> {{ $order->expires_at?->format('d M Y H:i') ?? '-' }}</p>
-            <p><strong>Platform Fee:</strong> Rp {{ number_format((float) $order->platform_fee, 0, ',', '.') }}</p>
-            <p><strong>Notes:</strong> {{ $order->notes ?: '-' }}</p>
+            <div class="summary-list">
+                <div class="summary-row">
+                    <div class="summary-key">Type</div>
+                    <div class="summary-value">{{ strtoupper($order->order_type) }}</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-key">Status</div>
+                    <div class="summary-value">{{ strtoupper($order->order_status) }}</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-key">Customer</div>
+                    <div class="summary-value">{{ $order->customer?->name ?? 'Walk-in customer' }}</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-key">Ordered At</div>
+                    <div class="summary-value">{{ $order->ordered_at?->format('d M Y H:i') }}</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-key">Pickup Time</div>
+                    <div class="summary-value">{{ $order->pickup_time?->format('d M Y H:i') ?? '-' }}</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-key">Expires At</div>
+                    <div class="summary-value">{{ $order->expires_at?->format('d M Y H:i') ?? '-' }}</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-key">Platform Fee</div>
+                    <div class="summary-value">Rp {{ number_format((float) $order->platform_fee, 0, ',', '.') }}</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-key">Notes</div>
+                    <div class="summary-value">{{ $order->notes ?: '-' }}</div>
+                </div>
+            </div>
         </div>
 
-        <div class="card stack">
-            <h2>Status Actions</h2>
-            <p class="muted">Use these buttons to move pre-orders through the bakery workflow.</p>
+        <aside class="card status-panel">
+            <div>
+                <h2>Status Actions</h2>
+                <p class="muted">Use these controls to move the order through the bakery workflow.</p>
+            </div>
+
+            <div class="status-current">
+                <h3>Current Status</h3>
+                <div class="actions">
+                    <span class="badge">{{ strtoupper($order->order_status) }}</span>
+                    <span class="badge">{{ strtoupper($order->order_type) }}</span>
+                </div>
+            </div>
 
             @if (! in_array($order->order_status, ['completed', 'expired'], true))
-                <div class="actions">
+                <div class="action-grid">
                     <form action="{{ route('orders.status.update', $order) }}" method="POST">
                         @csrf
                         @method('PATCH')
@@ -61,32 +109,39 @@
                     @endif
                 </div>
             @else
-                <p class="muted">This order is already finished, so no more status changes are available.</p>
+                <div class="surface-note">
+                    This order is already finished, so no more status changes are available.
+                </div>
             @endif
-        </div>
+        </aside>
     </section>
 
     <section class="card" style="margin-top: 1rem;">
         <h2>Ordered Items</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Subtotal</th>
-            </tr>
-            </thead>
-            <tbody>
+        <div class="item-list">
             @foreach ($order->items as $item)
-                <tr>
-                    <td>{{ $item->product?->name }}</td>
-                    <td>{{ $item->quantity }}</td>
-                    <td>Rp {{ number_format((float) $item->unit_price, 0, ',', '.') }}</td>
-                    <td>Rp {{ number_format((float) $item->subtotal_item, 0, ',', '.') }}</td>
-                </tr>
+                <article class="item-row">
+                    <div class="product-main">
+                        <strong>{{ $item->product?->name }}</strong>
+                        <p class="product-copy">{{ $item->product?->category ?? 'Bakery item' }}</p>
+                    </div>
+
+                    <div class="product-meta">
+                        <span class="product-label">Quantity</span>
+                        <span class="product-value">{{ $item->quantity }}</span>
+                    </div>
+
+                    <div class="product-meta">
+                        <span class="product-label">Unit Price</span>
+                        <span class="product-value">Rp {{ number_format((float) $item->unit_price, 0, ',', '.') }}</span>
+                    </div>
+
+                    <div class="item-highlight">
+                        <div class="product-label">Subtotal</div>
+                        <div class="product-value">Rp {{ number_format((float) $item->subtotal_item, 0, ',', '.') }}</div>
+                    </div>
+                </article>
             @endforeach
-            </tbody>
-        </table>
+        </div>
     </section>
 @endsection

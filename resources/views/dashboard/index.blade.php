@@ -9,7 +9,7 @@
                 <p class="muted">A single control room for menu changes, stock visibility, daily revenue, and live order handling.</p>
                 <div class="actions">
                     <a class="button-inline" href="{{ route('orders.create') }}">Create Order</a>
-                    <a class="button-inline button-secondary" href="{{ route('products.create') }}">Add Product</a>
+                    <a class="button-inline" href="{{ route('products.create') }}">Add Product</a>
                 </div>
             </div>
 
@@ -40,59 +40,84 @@
         </div>
     </section>
 
-    <section class="grid grid-2" style="margin-top: 1rem;">
-        <div class="card">
-            <h2>Low Stock Watch</h2>
+    <section class="grid grid-2 dashboard-panels">
+        <div class="card dashboard-panel">
+            <div class="dashboard-panel-head">
+                <div>
+                    <h2>Low Stock Watch</h2>
+                    <p class="muted">Products that need attention before they run too low.</p>
+                </div>
+            </div>
+
             @if ($lowStockItems->isEmpty())
                 <p class="muted">No product is below its reorder level right now.</p>
             @else
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Stock</th>
-                        <th>Reorder Level</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                <div class="dashboard-list">
                     @foreach ($lowStockItems as $inventory)
-                        <tr>
-                            <td>{{ $inventory->product?->name }}</td>
-                            <td>{{ $inventory->quantity_on_hand }}</td>
-                            <td>{{ $inventory->reorder_level }}</td>
-                        </tr>
+                        <article class="dashboard-row">
+                            <div class="dashboard-main">
+                                <strong>{{ $inventory->product?->name }}</strong>
+                                <p class="product-copy">{{ $inventory->product?->category }}</p>
+                                <div class="dashboard-details">
+                                    <div class="dashboard-detail">
+                                        <span class="product-label">Stock</span>
+                                        <span class="product-value">{{ $inventory->quantity_on_hand }}</span>
+                                    </div>
+                                    <div class="dashboard-detail">
+                                        <span class="product-label">Reorder Level</span>
+                                        <span class="product-value">{{ $inventory->reorder_level }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-action">
+                                <a class="dashboard-link" href="{{ route('inventories.index') }}">Manage stock</a>
+                            </div>
+                        </article>
                     @endforeach
-                    </tbody>
-                </table>
+                </div>
             @endif
         </div>
 
-        <div class="card">
-            <h2>Recent Orders</h2>
+        <div class="card dashboard-panel">
+            <div class="dashboard-panel-head">
+                <div>
+                    <h2>Recent Orders</h2>
+                    <p class="muted">Latest order activity with status and totals at a glance.</p>
+                </div>
+            </div>
+
             @if ($recentOrders->isEmpty())
                 <p class="muted">No orders yet. Start from the Orders page.</p>
             @else
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Order</th>
-                        <th>Status</th>
-                        <th>Total</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                <div class="dashboard-list">
                     @foreach ($recentOrders as $order)
-                        <tr>
-                            <td>
-                                <a href="{{ route('orders.show', $order) }}">{{ $order->order_number }}</a><br>
-                                <span class="muted">{{ $order->customer?->name ?? 'Walk-in customer' }}</span>
-                            </td>
-                            <td><span class="badge">{{ strtoupper($order->order_status) }}</span></td>
-                            <td>Rp {{ number_format((float) $order->total_amount, 0, ',', '.') }}</td>
-                        </tr>
+                        <article class="dashboard-row">
+                            <div class="dashboard-main">
+                                <strong>{{ $order->order_number }}</strong>
+                                <p class="product-copy">{{ $order->customer?->name ?? 'Walk-in customer' }}</p>
+                                <div class="dashboard-details">
+                                    <div class="dashboard-detail">
+                                        <span class="product-label">Type</span>
+                                        <span class="product-value">{{ strtoupper($order->order_type) }}</span>
+                                    </div>
+                                    <div class="dashboard-detail">
+                                        <span class="product-label">Status</span>
+                                        <span class="badge">{{ strtoupper($order->order_status) }}</span>
+                                    </div>
+                                    <div class="dashboard-detail">
+                                        <span class="product-label">Total</span>
+                                        <span class="product-value">Rp {{ number_format((float) $order->total_amount, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-action">
+                                <a class="dashboard-link" href="{{ route('orders.show', $order) }}">Open order</a>
+                            </div>
+                        </article>
                     @endforeach
-                    </tbody>
-                </table>
+                </div>
             @endif
         </div>
     </section>

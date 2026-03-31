@@ -110,7 +110,7 @@ The easiest way is with phpMyAdmin.
 3. Go to:
 
 ```text
-http://localhost/phpmyadmin
+http://localhost:8080/phpmyadmin
 ```
 
 4. Look for a button or menu named `New` on the left side.

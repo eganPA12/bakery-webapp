@@ -1,7 +1,8 @@
 <?php $__env->startSection('content'); ?>
     <section class="hero">
-        <div class="actions">
+        <div class="actions" style="justify-content: space-between;">
             <div>
+                <span class="eyebrow">Order Queue</span>
                 <h1>Orders</h1>
                 <p class="muted">Orders include both quick counter sales and customer pre-orders.</p>
             </div>
@@ -13,31 +14,35 @@
         <?php if($orders->isEmpty()): ?>
             <p class="muted">No orders yet.</p>
         <?php else: ?>
-            <table>
-                <thead>
-                <tr>
-                    <th>Order</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="order-list">
                 <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <tr>
-                        <td>
-                            <strong><?php echo e($order->order_number); ?></strong><br>
-                            <span class="muted"><?php echo e($order->customer?->name ?? 'Walk-in customer'); ?></span>
-                        </td>
-                        <td><?php echo e(strtoupper($order->order_type)); ?></td>
-                        <td><span class="badge"><?php echo e(strtoupper($order->order_status)); ?></span></td>
-                        <td>Rp <?php echo e(number_format((float) $order->total_amount, 0, ',', '.')); ?></td>
-                        <td><a href="<?php echo e(route('orders.show', $order)); ?>">Details</a></td>
-                    </tr>
+                    <article class="order-row">
+                        <div class="product-main">
+                            <strong><?php echo e($order->order_number); ?></strong>
+                            <p class="product-copy"><?php echo e($order->customer?->name ?? 'Walk-in customer'); ?></p>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Type</span>
+                            <span class="product-value"><?php echo e(strtoupper($order->order_type)); ?></span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Status</span>
+                            <span class="badge"><?php echo e(strtoupper($order->order_status)); ?></span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Total</span>
+                            <span class="product-value">Rp <?php echo e(number_format((float) $order->total_amount, 0, ',', '.')); ?></span>
+                        </div>
+
+                        <div class="row-actions">
+                            <a href="<?php echo e(route('orders.show', $order)); ?>">View order</a>
+                        </div>
+                    </article>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </tbody>
-            </table>
+            </div>
         <?php endif; ?>
     </section>
 <?php $__env->stopSection(); ?>

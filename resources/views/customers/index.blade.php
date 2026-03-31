@@ -2,8 +2,9 @@
 
 @section('content')
     <section class="hero">
-        <div class="actions">
+        <div class="actions" style="justify-content: space-between;">
             <div>
+                <span class="eyebrow">Customer Directory</span>
                 <h1>Customers</h1>
                 <p class="muted">Customers can come from manual owner input or from public pre-orders.</p>
             </div>
@@ -15,26 +16,30 @@
         @if ($customers->isEmpty())
             <p class="muted">No customers yet.</p>
         @else
-            <table>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="customer-list">
                 @foreach ($customers as $customer)
-                    <tr>
-                        <td>{{ $customer->name }}</td>
-                        <td>{{ $customer->email ?: '-' }}</td>
-                        <td>{{ $customer->phone ?: '-' }}</td>
-                        <td><a href="{{ route('customers.edit', $customer) }}">Edit</a></td>
-                    </tr>
+                    <article class="customer-row">
+                        <div class="product-main">
+                            <strong>{{ $customer->name }}</strong>
+                            <p class="product-copy">Registered bakery customer</p>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Email</span>
+                            <span class="product-value">{{ $customer->email ?: '-' }}</span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Phone</span>
+                            <span class="product-value">{{ $customer->phone ?: '-' }}</span>
+                        </div>
+
+                        <div class="row-actions">
+                            <a href="{{ route('customers.edit', $customer) }}">Edit customer</a>
+                        </div>
+                    </article>
                 @endforeach
-                </tbody>
-            </table>
+            </div>
         @endif
     </section>
 @endsection

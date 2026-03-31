@@ -2,8 +2,9 @@
 
 @section('content')
     <section class="hero">
-        <div class="actions">
+        <div class="actions" style="justify-content: space-between;">
             <div>
+                <span class="eyebrow">Order Queue</span>
                 <h1>Orders</h1>
                 <p class="muted">Orders include both quick counter sales and customer pre-orders.</p>
             </div>
@@ -15,31 +16,35 @@
         @if ($orders->isEmpty())
             <p class="muted">No orders yet.</p>
         @else
-            <table>
-                <thead>
-                <tr>
-                    <th>Order</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="order-list">
                 @foreach ($orders as $order)
-                    <tr>
-                        <td>
-                            <strong>{{ $order->order_number }}</strong><br>
-                            <span class="muted">{{ $order->customer?->name ?? 'Walk-in customer' }}</span>
-                        </td>
-                        <td>{{ strtoupper($order->order_type) }}</td>
-                        <td><span class="badge">{{ strtoupper($order->order_status) }}</span></td>
-                        <td>Rp {{ number_format((float) $order->total_amount, 0, ',', '.') }}</td>
-                        <td><a href="{{ route('orders.show', $order) }}">Details</a></td>
-                    </tr>
+                    <article class="order-row">
+                        <div class="product-main">
+                            <strong>{{ $order->order_number }}</strong>
+                            <p class="product-copy">{{ $order->customer?->name ?? 'Walk-in customer' }}</p>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Type</span>
+                            <span class="product-value">{{ strtoupper($order->order_type) }}</span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Status</span>
+                            <span class="badge">{{ strtoupper($order->order_status) }}</span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Total</span>
+                            <span class="product-value">Rp {{ number_format((float) $order->total_amount, 0, ',', '.') }}</span>
+                        </div>
+
+                        <div class="row-actions">
+                            <a href="{{ route('orders.show', $order) }}">View order</a>
+                        </div>
+                    </article>
                 @endforeach
-                </tbody>
-            </table>
+            </div>
         @endif
     </section>
 @endsection

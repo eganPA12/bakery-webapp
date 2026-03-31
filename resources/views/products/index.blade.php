@@ -16,35 +16,38 @@
         @if ($products->isEmpty())
             <p class="muted">No products yet. Start by adding the first menu item.</p>
         @else
-            <table>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="product-list">
                 @foreach ($products as $product)
-                    <tr>
-                        <td>
-                            <strong>{{ $product->name }}</strong><br>
-                            <span class="muted">{{ $product->description }}</span>
-                        </td>
-                        <td>{{ $product->category }}</td>
-                        <td>Rp {{ number_format((float) $product->price, 0, ',', '.') }}</td>
-                        <td>{{ $product->inventory?->quantity_on_hand ?? 0 }}</td>
-                        <td>
-                            <span class="badge">{{ $product->is_active ? 'ACTIVE' : 'HIDDEN' }}</span>
-                        </td>
-                        <td><a href="{{ route('products.edit', $product) }}">Edit</a></td>
-                    </tr>
+                    <article class="product-row">
+                        <div class="product-main">
+                            <strong>{{ $product->name }}</strong>
+                            <p class="product-copy">{{ $product->description ?: 'No product description yet.' }}</p>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Category</span>
+                            <span class="product-value">{{ $product->category }}</span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Price</span>
+                            <span class="product-value">Rp {{ number_format((float) $product->price, 0, ',', '.') }}</span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Stock</span>
+                            <span class="product-value">{{ $product->inventory?->quantity_on_hand ?? 0 }}</span>
+                        </div>
+
+                        <div class="product-actions">
+                            <div class="stack-tight" style="justify-items: end;">
+                                <span class="badge {{ $product->is_active ? '' : 'badge-muted' }}">{{ $product->is_active ? 'ACTIVE' : 'HIDDEN' }}</span>
+                                <a href="{{ route('products.edit', $product) }}">Edit product</a>
+                            </div>
+                        </div>
+                    </article>
                 @endforeach
-                </tbody>
-            </table>
+            </div>
         @endif
     </section>
 @endsection

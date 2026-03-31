@@ -14,35 +14,38 @@
         <?php if($products->isEmpty()): ?>
             <p class="muted">No products yet. Start by adding the first menu item.</p>
         <?php else: ?>
-            <table>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="product-list">
                 <?php $__currentLoopData = $products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <tr>
-                        <td>
-                            <strong><?php echo e($product->name); ?></strong><br>
-                            <span class="muted"><?php echo e($product->description); ?></span>
-                        </td>
-                        <td><?php echo e($product->category); ?></td>
-                        <td>Rp <?php echo e(number_format((float) $product->price, 0, ',', '.')); ?></td>
-                        <td><?php echo e($product->inventory?->quantity_on_hand ?? 0); ?></td>
-                        <td>
-                            <span class="badge"><?php echo e($product->is_active ? 'ACTIVE' : 'HIDDEN'); ?></span>
-                        </td>
-                        <td><a href="<?php echo e(route('products.edit', $product)); ?>">Edit</a></td>
-                    </tr>
+                    <article class="product-row">
+                        <div class="product-main">
+                            <strong><?php echo e($product->name); ?></strong>
+                            <p class="product-copy"><?php echo e($product->description ?: 'No product description yet.'); ?></p>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Category</span>
+                            <span class="product-value"><?php echo e($product->category); ?></span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Price</span>
+                            <span class="product-value">Rp <?php echo e(number_format((float) $product->price, 0, ',', '.')); ?></span>
+                        </div>
+
+                        <div class="product-meta">
+                            <span class="product-label">Stock</span>
+                            <span class="product-value"><?php echo e($product->inventory?->quantity_on_hand ?? 0); ?></span>
+                        </div>
+
+                        <div class="product-actions">
+                            <div class="stack-tight" style="justify-items: end;">
+                                <span class="badge <?php echo e($product->is_active ? '' : 'badge-muted'); ?>"><?php echo e($product->is_active ? 'ACTIVE' : 'HIDDEN'); ?></span>
+                                <a href="<?php echo e(route('products.edit', $product)); ?>">Edit product</a>
+                            </div>
+                        </div>
+                    </article>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </tbody>
-            </table>
+            </div>
         <?php endif; ?>
     </section>
 <?php $__env->stopSection(); ?>
